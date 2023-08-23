@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
+
 
 interface IUserAttrs {
   email: string;
@@ -26,6 +28,17 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+// middleware in mongoose
+// "function" let us user THIS in the context on the class !!!
+// otherwise, it would be in the context of the file
+userSchema.pre('save', async function(done){
+    if(this.isModified('password')){
+        const hashed = await Password.toHash(this.get('password'))
+        this.set('password', hashed);
+    }
+    done();
+})
 
 const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
 
