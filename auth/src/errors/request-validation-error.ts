@@ -8,7 +8,7 @@ export class RequestValidationError extends CustomError {
     super("invalid request parameters");
 
     // Only because we are extending a built in class
-    // Object.setPrototypeOf(this, RequestValidationError.prototype);
+    Object.setPrototypeOf(this, RequestValidationError.prototype);
   }
 
   serializeErrors() {

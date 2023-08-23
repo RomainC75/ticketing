@@ -1,4 +1,4 @@
-interface ICustomError {
+export interface ICustomError {
   message: string;
   field?: string;
 }
@@ -6,8 +6,8 @@ interface ICustomError {
 export abstract class CustomError extends Error {
   abstract statusCode: number;
 
-  constructor(mesaage: string) {
-    super();
+  constructor(public message: string) {
+    super(message);
     Object.setPrototypeOf(this, CustomError.prototype);
   }
 
