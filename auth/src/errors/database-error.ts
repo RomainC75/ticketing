@@ -1,4 +1,4 @@
-import { CustomError } from "./custom-error";
+import { CustomError, ICustomError } from "./custom-error";
 
 export class DatabaseConnectionError extends CustomError {
   statusCode = 400;
@@ -12,7 +12,7 @@ export class DatabaseConnectionError extends CustomError {
     console.log("---> database !", this.serializeErrors())
   }
 
-  public serializeErrors() {
+  public serializeErrors(): ICustomError[] {
     return [{ message: this.reason }];
   }
 }

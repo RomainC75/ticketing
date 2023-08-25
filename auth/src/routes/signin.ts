@@ -1,7 +1,11 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { RequestValidationError } from "../errors/request-validation-error";
 import { validateRequest } from "../middlewares/validate-request.mid";
+import { User } from "../models/user.model";
+import { BadRequestError } from "../errors/bad-request-error";
+import { Password } from "../services/password";
+import jwt from 'jsonwebtoken'
 
 const router = express.Router();
 
@@ -12,8 +16,31 @@ router.post(
     body("password").trim().notEmpty().withMessage("You must apply a password"),
   ],
   validateRequest,
-  (req: Request, res: Response) => {
-    
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body;
+    const foundUser = await User.findOne({ email });
+    if (!foundUser) {
+      return next(new BadRequestError("Invalid Credentials"));
+    }
+    const passwordMatch = Password.compare(foundUser.password, password);
+    if (!passwordMatch) {
+      return next(new BadRequestError("Invalid Credentials"));
+    }
+
+    //generat JWT
+    const userJwt = jwt.sign(
+      {
+        id: foundUser.id,
+        email: foundUser.email,
+        // -! because we do the check in index.ts
+      },
+      process.env.JWT_KEY!
+    );
+    //store it on session object
+    req.session = {
+      jwt: userJwt,
+    };
+    res.status(200).send(foundUser)
   }
 );
 
