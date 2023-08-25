@@ -14,8 +14,8 @@ interface UserModel  extends mongoose.Model<UserDoc>{
 interface UserDoc extends mongoose.Document{
     email: string;
     password: string;
-    createAt: string;
-    updatedAt: string;
+    // createAt: string;
+    // updatedAt: string;
 }
 
 const userSchema = new mongoose.Schema({
@@ -40,11 +40,12 @@ userSchema.pre('save', async function(done){
     done();
 })
 
-const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
-
-// to protec the inputs with a function
+// to protect the inputs with a function
 userSchema.statics.build = (attrs: IUserAttrs) => {
   return new User(attrs);
 };
+
+const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
+
 
 export { User };

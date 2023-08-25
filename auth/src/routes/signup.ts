@@ -3,6 +3,7 @@ import { body, validationResult } from "express-validator";
 import { RequestValidationError } from "../errors/request-validation-error";
 import { User } from "../models/user.model";
 import { BadRequestError } from "../errors/bad-request-error";
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -20,20 +21,27 @@ router.post(
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        console.log("-> array : ", errors.array())
         throw new RequestValidationError(errors.array())
       }
       const { email, password } = req.body;
-
+      
       const foundUser = await User.findOne({ email });
       if (foundUser) {
-        console.log("email already exists ! ");
         throw new BadRequestError('email already exists!')
       }
-
-      // const user = User.build({email,password});
-      const user = new User({ email, password });
+      
+      const user = User.build({ email, password });
       await user.save();
+
+      //generat JWT
+      const userJwt = jwt.sign({
+        id: user.id,
+        email: user.email
+      }, 'secretkey')
+      //store it on session object
+      req.session = {
+        jwt: userJwt
+      }
 
       res.status(201).send(user);
     } catch (error) {
