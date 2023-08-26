@@ -19,6 +19,7 @@ export const currentUser = (
   res: Response,
   next: NextFunction
 ) => {
+    //added by app.use(cookieSession())
   if (!req.session?.jwt) {
     return next();
   }
