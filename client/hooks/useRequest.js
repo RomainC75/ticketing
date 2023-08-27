@@ -1,14 +1,21 @@
 import axios from "axios";
 import { useState } from "react";
 
+const config = {
+    headers: {
+        "content-type": "application/json"
+    },
+    withCredentials: true
+};
+
 const useRequest = ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
   const doRequest = async () => {
     try {
       setErrors(null);
-      const response = await axios[method](url, body);
-      console.log("--> no error ? ")
+      const response = await axios[method](url, body, config);
+      console.log("--> no error ? ", response)
       if (onSuccess) {
         onSuccess(response.data);
       }

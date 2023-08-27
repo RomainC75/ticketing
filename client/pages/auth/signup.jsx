@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Router from 'next/router';
- import useRequest from "../../hooks/useRequest";
+import useRequest from "../../hooks/useRequest";
+ 
 
 const Signup = () => {
   const [email, setEmail] = useState("");
