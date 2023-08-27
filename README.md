@@ -7,7 +7,7 @@
 
 
 ## Create Secret
-    kubectl create secret generic jwt-secret --from-literal=JWT_KEY=mysecretkey
+    ```kubectl create secret generic jwt-secret --from-literal=JWT_KEY=mysecretkey```
 
 ## details
 
@@ -15,4 +15,25 @@
 
     next.config.js : make the chances to view the changes higher (but still not 100%)
 
-    kubectl get services -n ingress-nginx
+    ```kubectl get services -n ingress-nginx```
+
+## common : publish package
+### package.json
+        1 - "name": "@mychnrdorg/common" 
+        -> ```npm publish --access public```
+
+        2 - "main": the 1 file to import with "import ... from '@mychnrdorg/common'"
+
+        3 - "types"/"files" : make sure with include theses files inside the package 
+
+    don't hesitate to clean ./common/build before building another version of the library -> see package.json
+
+### commands
+    ***npm version patch*** : update the version number in the package.json
+    ```npm publish```
+
+    npm run pub (package.json) : NOT GOOD in production
+
+    update the libray :
+        ```npm update @mychnrdorg/common```
+    
